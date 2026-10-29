@@ -1,0 +1,57 @@
+//! Native Rust port of the ipcz core. Modules mirror `src/ipcz/*` upstream.
+
+pub mod api;
+pub mod api_context;
+pub mod api_object;
+pub mod application_object;
+pub mod box_object;
+pub mod ipcz_types;
+pub mod local_router_link;
+pub mod node;
+pub mod node_connector;
+pub mod node_link;
+pub mod parcel;
+pub mod reference_drivers;
+pub mod parcel_wrapper;
+pub mod pending_transaction_set;
+pub mod remote_router_link;
+pub mod route_edge;
+pub mod router;
+pub mod router_link;
+pub mod trap_event_dispatcher;
+pub mod trap_set;
+pub mod block_allocator;
+pub mod block_allocator_pool;
+pub mod buffer_id;
+pub mod buffer_pool;
+pub mod driver;
+pub mod driver_memory;
+pub mod driver_memory_mapping;
+pub mod driver_object;
+pub mod driver_transport;
+pub mod features;
+pub mod fragment;
+pub mod fragment_descriptor;
+pub mod fragment_ref;
+pub mod handle_type;
+pub mod ipcz_result;
+pub mod link_side;
+pub mod link_type;
+pub mod message;
+pub mod metrics;
+pub mod multi_mutex_lock;
+pub mod node_link_memory;
+pub mod node_name;
+pub mod node_type;
+pub mod ref_counted_fragment;
+pub mod router_descriptor;
+pub mod router_link_state;
+pub mod safe_math;
+pub mod sequence_number;
+pub mod sequenced_queue;
+pub mod sublink_id;
+pub(crate) mod message_macros;
+pub mod node_messages;
+
+#[cfg(test)]
+pub(crate) mod testing;

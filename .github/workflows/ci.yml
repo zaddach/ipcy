@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Linux runs the Unix-socket driver, macOS the Mach-port driver and
+        # Windows the named-pipe driver through the shared driver tests.
+        include:
+          - { name: linux, os: ubuntu-latest }
+          - { name: macos, os: macos-latest }
+          - { name: windows, os: windows-latest }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - run: cargo clippy --all-targets
+      - name: platform driver tests
+        run: "cargo test --lib drivers::"
+      - name: cargo test
+        shell: bash
+        run: |
+          set +e
+          cargo test --no-fail-fast 2>&1 | tee test.log
+          status=${PIPESTATUS[0]}
+          # Surface failures as annotations, so they can be read without the
+          # full log.
+          { grep -E -A1 "panicked at" test.log; grep -E "FAILED|^error|error\[|timed out|Win32" test.log; } | grep -v '^--$' | head -80 | cut -c1-300 \
+            | awk 'NR%10==1{if(NR>1)print msg; msg=""} {msg=msg (msg==""?"":"%0A") $0} END{print msg}' \
+            | while read -r line; do echo "::error title=test failures::$line"; done
+          exit $status
